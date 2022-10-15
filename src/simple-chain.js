@@ -4,38 +4,39 @@ const { NotImplementedError } = require('../extensions/index.js');
  * Implement chainMaker object according to task description
  * 
  */
-const chainMaker = {
-  data: [],
-  value: '( )',
-  data2: [],
+ const chainMaker = {
+  chains: [],
 
   getLength() {
-    return this.data.length;
-    
+    return this.chains.length
   },
   addLink(value) {
-   this.data.push(`( ${value} )`);
-   return this; 
+    this.chains = this.chains.concat(value)
+    return this
   },
   removeLink(position) {
-    if(((position) > this.data.length) || ((position -1) < 0) || (typeof position !== 'number')){
-      throw new Error("You can't remove incorrect link");
-      this.data.length = 0;
-    }else {
-      this.data.splice(position - 1, 1);
+    if(typeof position != 'number' || position > this.chains.length || position < 1) {
+      this.chains = []
+      throw new Error("You can't remove incorrect link!")
     }
-    return this;
+    position--
+    this.chains = this.chains.filter((it, i) => i != position)
+    return this
   },
   reverseChain() {
-    this.data.reverse();
-    return this;
+    let newArr = []
+    if(this.chains.length == 0) return this
+    for(i = this.chains.length - 1; i >= 0; i--){
+      newArr = newArr.concat(this.chains[i])
+    }
+    this.chains = newArr;
+    return this
   },
   finishChain() {
-    this.data2 = this.data.slice();
-    this.data = [];
-    return this.data2.join('~~');
+    let chainsReady = this.chains
+    this.chains = []
+    return chainsReady.map((it, i) => `( ${it} )`).join('~~')
   }
-  
 };
 
 
